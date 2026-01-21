@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9-Box Calibration Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f26;
+            --bg-tertiary: #242b35;
+            --bg-card: #2d3540;
+            --text-primary: #f7f9fa;
+            --text-secondary: #8b98a5;
+            --text-muted: #6e7a88;
+            --accent-blue: #1d9bf0;
+            --accent-green: #00ba7c;
+            --accent-yellow: #ffb800;
+            --accent-red: #f4212e;
+            --accent-purple: #7856ff;
+            --border-color: #38444d;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header h1::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a8cd8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--text-muted);
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00a36e;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Grid Container */
+        .grid-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .employee-count {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        /* 9-Box Grid */
+        .nine-box-wrapper {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 0.5rem;
+        }
+
+        .y-axis-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 0.5rem;
+        }
+
+        .x-axis-label {
+            grid-column: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.5rem 0;
+        }
+
+        .corner-spacer {
+            /* Empty corner */
+        }
+
+        .nine-box-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 8px;
+            aspect-ratio: 3 / 2.5;
+            min-height: 500px;
+        }
+
+        .grid-box {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--box-accent, var(--border-color));
+            opacity: 0.8;
+        }
+
+        .grid-box.drag-over {
+            border-color: var(--accent-blue);
+            background: rgba(29, 155, 240, 0.1);
+            transform: scale(1.02);
+        }
+
+        .grid-box[data-box="9"] { --box-accent: var(--accent-green); }
+        .grid-box[data-box="8"] { --box-accent: var(--accent-green); }
+        .grid-box[data-box="7"] { --box-accent: var(--accent-blue); }
+        .grid-box[data-box="6"] { --box-accent: var(--accent-green); }
+        .grid-box[data-box="5"] { --box-accent: var(--accent-blue); }
+        .grid-box[data-box="4"] { --box-accent: var(--accent-yellow); }
+        .grid-box[data-box="3"] { --box-accent: var(--accent-yellow); }
+        .grid-box[data-box="2"] { --box-accent: var(--accent-red); }
+        .grid-box[data-box="1"] { --box-accent: var(--accent-red); }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .box-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        .box-label .performance {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .box-stats {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            text-align: right;
+            color: var(--text-muted);
+        }
+
+        .box-stats .count {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .box-stats .percent {
+            display: block;
+        }
+
+        .box-stats .target {
+            display: block;
+            opacity: 0.7;
+        }
+
+        .box-employees {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        /* Employee Cards */
+        .employee-card {
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 0.375rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .employee-card:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .employee-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .employee-card.hidden {
+            display: none;
+        }
+
+        /* Axis Labels */
+        .grid-with-labels {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 8px;
+        }
+
+        .corner-spacer {
+            /* Empty top-left corner */
+        }
+
+        .column-labels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .column-label {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+        }
+
+        .row-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .row-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            text-align: right;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding-right: 0.5rem;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: var(--bg-tertiary);
+            padding: 0.875rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-content {
+            padding: 1rem;
+        }
+
+        /* Unplotted Box */
+        .unplotted-box {
+            min-height: 120px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-content: flex-start;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.75rem;
+            border: 2px dashed var(--border-color);
+            transition: all var(--transition-normal);
+        }
+
+        .unplotted-box.drag-over {
+            border-color: var(--accent-blue);
+            background: rgba(29, 155, 240, 0.1);
+        }
+
+        .unplotted-count {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Filters */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .filter-item label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .filter-actions button {
+            flex: 1;
+            font-size: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        /* Distribution Stats */
+        .distribution-section {
+            margin-bottom: 1rem;
+        }
+
+        .distribution-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .distribution-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .distribution-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.375rem;
+            font-size: 0.75rem;
+        }
+
+        .distribution-label {
+            width: 80px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .distribution-bar-container {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .distribution-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width var(--transition-normal);
+        }
+
+        .distribution-bar.under {
+            background: var(--accent-blue);
+        }
+
+        .distribution-bar.on-target {
+            background: var(--accent-green);
+        }
+
+        .distribution-bar.over {
+            background: var(--accent-yellow);
+        }
+
+        .distribution-bar.way-over {
+            background: var(--accent-red);
+        }
+
+        .distribution-target {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--text-primary);
+            opacity: 0.5;
+        }
+
+        .distribution-values {
+            width: 70px;
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .distribution-values .actual {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Box Distribution Grid */
+        .box-distribution {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+
+        .box-dist-item {
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            padding: 0.5rem;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box-dist-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .box-dist-item.under::before { background: var(--accent-blue); }
+        .box-dist-item.on-target::before { background: var(--accent-green); }
+        .box-dist-item.over::before { background: var(--accent-yellow); }
+        .box-dist-item.way-over::before { background: var(--accent-red); }
+
+        .box-dist-item .box-num {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .box-dist-item .box-actual {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .box-dist-item .box-target {
+            color: var(--text-muted);
+            font-size: 0.6rem;
+        }
+
+        /* Upload Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+            line-height: 1;
+            padding: 0.25rem;
+            transition: color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--accent-blue);
+            background: rgba(29, 155, 240, 0.1);
+        }
+
+        .upload-zone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone-text {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone-hint {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+
+        .column-mapping {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .column-mapping.active {
+            display: block;
+        }
+
+        .mapping-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .mapping-label {
+            width: 120px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .mapping-select {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.875rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--box-shadow);
+            z-index: 1001;
+            opacity: 0;
+            transition: all var(--transition-normal);
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-top: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-color.under { background: var(--accent-blue); }
+        .legend-color.on-target { background: var(--accent-green); }
+        .legend-color.over { background: var(--accent-yellow); }
+        .legend-color.way-over { background: var(--accent-red); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .right-panel {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .right-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .nine-box-grid {
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>9-Box Calibration Tool</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="openUploadModal()">
+                📤 Upload Excel
+            </button>
+            <button class="btn btn-secondary" onclick="saveSession()">
+                💾 Save Session
+            </button>
+            <button class="btn btn-secondary" onclick="loadSession()">
+                📂 Load Session
+            </button>
+            <button class="btn btn-success" onclick="exportToExcel()">
+                📥 Export Results
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="grid-container">
+            <div class="grid-header">
+                <span class="grid-title">Performance × Potential Matrix</span>
+                <span class="employee-count" id="employeeCount">0 employees plotted</span>
+            </div>
+            
+            <div class="grid-with-labels">
+                <div class="corner-spacer"></div>
+                <div class="column-labels">
+                    <div class="column-label">Enable in Role</div>
+                    <div class="column-label">Grow</div>
+                    <div class="column-label">Accelerate</div>
+                </div>
+
+                <div class="row-labels">
+                    <div class="row-label">Exceptional</div>
+                    <div class="row-label">Satisfactory</div>
+                    <div class="row-label">Challenging</div>
+                </div>
+
+                <div class="nine-box-grid" id="nineBoxGrid">
+                    <!-- Row 1: Exceptional -->
+                    <div class="grid-box" data-box="7" data-performance="Exceptional" data-potential="Enable">
+                        <div class="box-header">
+                            <div class="box-label">Enable<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 12%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="8" data-performance="Exceptional" data-potential="Grow">
+                        <div class="box-header">
+                            <div class="box-label">Grow<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 9%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="9" data-performance="Exceptional" data-potential="Accelerate">
+                        <div class="box-header">
+                            <div class="box-label">Accelerate<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+
+                    <!-- Row 2: Satisfactory -->
+                    <div class="grid-box" data-box="4" data-performance="Satisfactory" data-potential="Enable">
+                        <div class="box-header">
+                            <div class="box-label">Enable<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 32%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="5" data-performance="Satisfactory" data-potential="Grow">
+                        <div class="box-header">
+                            <div class="box-label">Grow<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 23%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="6" data-performance="Satisfactory" data-potential="Accelerate">
+                        <div class="box-header">
+                            <div class="box-label">Accelerate<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 10%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+
+                    <!-- Row 3: Challenging -->
+                    <div class="grid-box" data-box="1" data-performance="Challenging" data-potential="Enable">
+                        <div class="box-header">
+                            <div class="box-label">Enable<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 5%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="2" data-performance="Challenging" data-potential="Grow">
+                        <div class="box-header">
+                            <div class="box-label">Grow<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="3" data-performance="Challenging" data-potential="Accelerate">
+                        <div class="box-header">
+                            <div class="box-label">Accelerate<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 1%</span></div>
+                        </div>
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <!-- Unplotted Section -->
+            <div class="panel-section">
+                <div class="panel-header">📋 Unplotted Employees</div>
+                <div class="panel-content">
+                    <div class="unplotted-box" id="unplottedBox"></div>
+                    <div class="unplotted-count" id="unplottedCount">0 employees unplotted</div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="panel-section">
+                <div class="panel-header">🔍 Filter by Job Level</div>
+                <div class="panel-content">
+                    <div class="filter-grid" id="filterGrid">
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-P2" checked>
+                            <label for="filter-P2">P2</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-M2" checked>
+                            <label for="filter-M2">M2</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-P3" checked>
+                            <label for="filter-P3">P3</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-M3" checked>
+                            <label for="filter-M3">M3</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-P4" checked>
+                            <label for="filter-P4">P4</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-M4" checked>
+                            <label for="filter-M4">M4</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-P5" checked>
+                            <label for="filter-P5">P5</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-M5" checked>
+                            <label for="filter-M5">M5</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-P6" checked>
+                            <label for="filter-P6">P6</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-M6" checked>
+                            <label for="filter-M6">M6</label>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-secondary" onclick="selectAllFilters()">Select All</button>
+                        <button class="btn btn-secondary" onclick="clearAllFilters()">Clear All</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Distribution Section -->
+            <div class="panel-section">
+                <div class="panel-header">📊 Distribution vs Guidelines</div>
+                <div class="panel-content">
+                    <!-- By Performance Row -->
+                    <div class="distribution-section">
+                        <div class="distribution-title">By Performance</div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Exceptional</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-exceptional" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 25%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-exceptional">0%</span> / 25%</span>
+                        </div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Satisfactory</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-satisfactory" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 65%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-satisfactory">0%</span> / 65%</span>
+                        </div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Challenging</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-challenging" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 10%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-challenging">0%</span> / 10%</span>
+                        </div>
+                    </div>
+
+                    <!-- By Potential Column -->
+                    <div class="distribution-section">
+                        <div class="distribution-title">By Potential</div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Accelerate</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-accelerate" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 15%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-accelerate">0%</span> / 15%</span>
+                        </div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Grow</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-grow" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 35%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-grow">0%</span> / 35%</span>
+                        </div>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Enable</span>
+                            <div class="distribution-bar-container">
+                                <div class="distribution-bar" id="bar-enable" style="width: 0%"></div>
+                                <div class="distribution-target" style="left: 50%"></div>
+                            </div>
+                            <span class="distribution-values"><span class="actual" id="val-enable">0%</span> / 50%</span>
+                        </div>
+                    </div>
+
+                    <!-- By Box -->
+                    <div class="distribution-section">
+                        <div class="distribution-title">By Box</div>
+                        <div class="box-distribution" id="boxDistribution">
+                            <div class="box-dist-item" data-box="7">
+                                <div class="box-num">7</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">12%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="8">
+                                <div class="box-num">8</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">9%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="9">
+                                <div class="box-num">9</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">4%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="4">
+                                <div class="box-num">4</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">32%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="5">
+                                <div class="box-num">5</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">23%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="6">
+                                <div class="box-num">6</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">10%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="1">
+                                <div class="box-num">1</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">5%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="2">
+                                <div class="box-num">2</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">4%</div>
+                            </div>
+                            <div class="box-dist-item" data-box="3">
+                                <div class="box-num">3</div>
+                                <div class="box-actual">0%</div>
+                                <div class="box-target">1%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-color under"></div>Under target</div>
+                        <div class="legend-item"><div class="legend-color on-target"></div>On target (±2%)</div>
+                        <div class="legend-item"><div class="legend-color over"></div>Over (2-5%)</div>
+                        <div class="legend-item"><div class="legend-color way-over"></div>Way over (5%+)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Upload Employee Data</h2>
+                <button class="modal-close" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-zone-icon">📁</div>
+                    <div class="upload-zone-text">Drop your Excel file here or click to browse</div>
+                    <div class="upload-zone-hint">Supports .xlsx and .xls files</div>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls">
+                </div>
+                <div class="column-mapping" id="columnMapping">
+                    <div class="mapping-row">
+                        <span class="mapping-label">Name Column:</span>
+                        <select class="mapping-select" id="nameColumn"></select>
+                    </div>
+                    <div class="mapping-row">
+                        <span class="mapping-label">Job Level Column:</span>
+                        <select class="mapping-select" id="levelColumn"></select>
+                    </div>
+                    <div class="mapping-row">
+                        <span class="mapping-label">Performance Column:</span>
+                        <select class="mapping-select" id="performanceColumn"></select>
+                    </div>
+                    <div class="mapping-row">
+                        <span class="mapping-label">Potential Column:</span>
+                        <select class="mapping-select" id="potentialColumn"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+                <button class="btn btn-primary" id="importBtn" onclick="importData()" disabled>Import Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for session load -->
+    <input type="file" id="sessionFileInput" accept=".json" style="display: none;">
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-message" id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        
+        let employees = [];
+        let uploadedData = null;
+        let uploadedColumns = [];
+
+        const boxTargets = {
+            1: 5, 2: 4, 3: 1,
+            4: 32, 5: 23, 6: 10,
+            7: 12, 8: 9, 9: 4
+        };
+
+        const performanceTargets = {
+            'Exceptional': 25,
+            'Satisfactory': 65,
+            'Challenging': 10
+        };
+
+        const potentialTargets = {
+            'Accelerate': 15,
+            'Grow': 35,
+            'Enable': 50
+        };
+
+        // ============================================
+        // DRAG AND DROP
+        // ============================================
+
+        function initDragAndDrop() {
+            // Make all grid boxes and unplotted box droppable
+            document.querySelectorAll('.grid-box, .unplotted-box').forEach(box => {
+                box.addEventListener('dragover', handleDragOver);
+                box.addEventListener('dragleave', handleDragLeave);
+                box.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function createEmployeeCard(employee) {
+            const card = document.createElement('div');
+            card.className = 'employee-card';
+            card.draggable = true;
+            card.dataset.id = employee.id;
+            card.textContent = employee.name;
+            card.title = `${employee.name}\nLevel: ${employee.level}`;
+
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            return card;
+        }
+
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            const employeeId = e.dataTransfer.getData('text/plain');
+            const employee = employees.find(emp => emp.id === employeeId);
+            
+            if (!employee) return;
+
+            const targetBox = e.currentTarget;
+            
+            if (targetBox.classList.contains('unplotted-box')) {
+                // Moving to unplotted
+                employee.box = null;
+                employee.performance = null;
+                employee.potential = null;
+            } else {
+                // Moving to a grid box
+                employee.box = parseInt(targetBox.dataset.box);
+                employee.performance = targetBox.dataset.performance;
+                employee.potential = targetBox.dataset.potential;
+            }
+
+            renderEmployees();
+            updateDistribution();
+        }
+
+        // ============================================
+        // RENDERING
+        // ============================================
+
+        function renderEmployees() {
+            // Clear all boxes
+            document.querySelectorAll('.box-employees').forEach(box => box.innerHTML = '');
+            document.getElementById('unplottedBox').innerHTML = '';
+
+            // Get active filters
+            const activeFilters = getActiveFilters();
+
+            // Count for display
+            let plottedCount = 0;
+            let unplottedCount = 0;
+
+            employees.forEach(employee => {
+                const card = createEmployeeCard(employee);
+                
+                // Check if employee matches filters
+                if (!activeFilters.includes(employee.level)) {
+                    card.classList.add('hidden');
+                }
+
+                if (employee.box) {
+                    const box = document.querySelector(`.grid-box[data-box="${employee.box}"] .box-employees`);
+                    if (box) {
+                        box.appendChild(card);
+                        if (!card.classList.contains('hidden')) plottedCount++;
+                    }
+                } else {
+                    document.getElementById('unplottedBox').appendChild(card);
+                    if (!card.classList.contains('hidden')) unplottedCount++;
+                }
+            });
+
+            // Update counts
+            document.getElementById('employeeCount').textContent = `${plottedCount} employees plotted`;
+            document.getElementById('unplottedCount').textContent = `${unplottedCount} employees unplotted`;
+
+            // Update box counts
+            updateBoxCounts();
+        }
+
+        function updateBoxCounts() {
+            const activeFilters = getActiveFilters();
+            
+            document.querySelectorAll('.grid-box').forEach(box => {
+                const boxNum = parseInt(box.dataset.box);
+                const cards = box.querySelectorAll('.employee-card:not(.hidden)');
+                const count = cards.length;
+                const total = employees.filter(e => e.box && activeFilters.includes(e.level)).length;
+                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+
+                box.querySelector('[data-count]').textContent = count;
+                box.querySelector('[data-percent]').textContent = `${percent}%`;
+            });
+        }
+
+        // ============================================
+        // DISTRIBUTION
+        // ============================================
+
+        function updateDistribution() {
+            const activeFilters = getActiveFilters();
+            const plottedEmployees = employees.filter(e => e.box && activeFilters.includes(e.level));
+            const total = plottedEmployees.length;
+
+            if (total === 0) {
+                // Reset all distributions
+                resetDistribution();
+                return;
+            }
+
+            // Count by performance
+            const perfCounts = { 'Exceptional': 0, 'Satisfactory': 0, 'Challenging': 0 };
+            // Count by potential
+            const potCounts = { 'Accelerate': 0, 'Grow': 0, 'Enable': 0 };
+            // Count by box
+            const boxCounts = {};
+            for (let i = 1; i <= 9; i++) boxCounts[i] = 0;
+
+            plottedEmployees.forEach(emp => {
+                if (emp.performance) perfCounts[emp.performance]++;
+                if (emp.potential) potCounts[emp.potential]++;
+                if (emp.box) boxCounts[emp.box]++;
+            });
+
+            // Update performance bars
+            Object.keys(perfCounts).forEach(perf => {
+                const percent = Math.round((perfCounts[perf] / total) * 100);
+                const target = performanceTargets[perf];
+                const barId = `bar-${perf.toLowerCase()}`;
+                const valId = `val-${perf.toLowerCase()}`;
+                
+                updateBar(barId, valId, percent, target);
+            });
+
+            // Update potential bars
+            Object.keys(potCounts).forEach(pot => {
+                const percent = Math.round((potCounts[pot] / total) * 100);
+                const target = potentialTargets[pot];
+                const barId = `bar-${pot.toLowerCase()}`;
+                const valId = `val-${pot.toLowerCase()}`;
+                
+                updateBar(barId, valId, percent, target);
+            });
+
+            // Update box distribution
+            Object.keys(boxCounts).forEach(box => {
+                const percent = Math.round((boxCounts[box] / total) * 100);
+                const target = boxTargets[box];
+                const item = document.querySelector(`.box-dist-item[data-box="${box}"]`);
+                
+                if (item) {
+                    item.querySelector('.box-actual').textContent = `${percent}%`;
+                    item.className = 'box-dist-item ' + getStatusClass(percent, target);
+                }
+            });
+
+            updateBoxCounts();
+        }
+
+        function updateBar(barId, valId, percent, target) {
+            const bar = document.getElementById(barId);
+            const val = document.getElementById(valId);
+            
+            if (bar && val) {
+                bar.style.width = `${Math.min(percent, 100)}%`;
+                bar.className = 'distribution-bar ' + getStatusClass(percent, target);
+                val.textContent = `${percent}%`;
+            }
+        }
+
+        function getStatusClass(actual, target) {
+            const diff = actual - target;
+            if (diff < -2) return 'under';
+            if (diff <= 2) return 'on-target';
+            if (diff <= 5) return 'over';
+            return 'way-over';
+        }
+
+        function resetDistribution() {
+            document.querySelectorAll('.distribution-bar').forEach(bar => {
+                bar.style.width = '0%';
+                bar.className = 'distribution-bar under';
+            });
+            document.querySelectorAll('.distribution-values .actual').forEach(val => {
+                val.textContent = '0%';
+            });
+            document.querySelectorAll('.box-dist-item').forEach(item => {
+                item.querySelector('.box-actual').textContent = '0%';
+                item.className = 'box-dist-item under';
+            });
+        }
+
+        // ============================================
+        // FILTERS
+        // ============================================
+
+        function getActiveFilters() {
+            const filters = [];
+            document.querySelectorAll('#filterGrid input[type="checkbox"]:checked').forEach(cb => {
+                filters.push(cb.id.replace('filter-', ''));
+            });
+            return filters;
+        }
+
+        function selectAllFilters() {
+            document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+            renderEmployees();
+            updateDistribution();
+        }
+
+        function clearAllFilters() {
+            document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            renderEmployees();
+            updateDistribution();
+        }
+
+        // Add filter change listeners
+        document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                renderEmployees();
+                updateDistribution();
+            });
+        });
+
+        // ============================================
+        // FILE UPLOAD
+        // ============================================
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('columnMapping').classList.remove('active');
+            document.getElementById('importBtn').disabled = true;
+            uploadedData = null;
+            uploadedColumns = [];
+        }
+
+        // Upload zone interactions
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('drag-over');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('drag-over');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) processFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) processFile(file);
+        });
+
+        function processFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                    if (jsonData.length === 0) {
+                        showToast('No data found in file', '⚠️');
+                        return;
+                    }
+
+                    uploadedData = jsonData;
+                    uploadedColumns = Object.keys(jsonData[0]);
+                    
+                    // Populate column dropdowns
+                    populateColumnSelects();
+                    
+                    // Show mapping section
+                    document.getElementById('columnMapping').classList.add('active');
+                    document.getElementById('importBtn').disabled = false;
+
+                    showToast(`Found ${jsonData.length} rows`, '✓');
+                } catch (error) {
+                    showToast('Error reading file', '⚠️');
+                    console.error(error);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function populateColumnSelects() {
+            const selects = ['nameColumn', 'levelColumn', 'performanceColumn', 'potentialColumn'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Select Column --</option>';
+                
+                uploadedColumns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    select.appendChild(option);
+                });
+
+                // Try to auto-detect columns
+                autoDetectColumn(select, selectId);
+            });
+        }
+
+        function autoDetectColumn(select, selectId) {
+            const hints = {
+                nameColumn: ['name', 'employee', 'worker', 'full name', 'employee name'],
+                levelColumn: ['level', 'job level', 'grade', 'job profile', 'profile'],
+                performanceColumn: ['performance', 'perf', 'rating', 'performance rating'],
+                potentialColumn: ['potential', 'pot', 'potential rating']
+            };
+
+            const selectHints = hints[selectId] || [];
+            
+            for (const col of uploadedColumns) {
+                const colLower = col.toLowerCase();
+                if (selectHints.some(hint => colLower.includes(hint))) {
+                    select.value = col;
+                    break;
+                }
+            }
+        }
+
+        function importData() {
+            const nameCol = document.getElementById('nameColumn').value;
+            const levelCol = document.getElementById('levelColumn').value;
+            const perfCol = document.getElementById('performanceColumn').value;
+            const potCol = document.getElementById('potentialColumn').value;
+
+            if (!nameCol) {
+                showToast('Please select a Name column', '⚠️');
+                return;
+            }
+
+            employees = uploadedData.map((row, index) => {
+                const name = row[nameCol] || 'Unknown';
+                const level = row[levelCol] || '';
+                const perfValue = row[perfCol] || '';
+                const potValue = row[potCol] || '';
+
+                // Parse performance and potential from values
+                const performance = parsePerformance(perfValue);
+                const potential = parsePotential(potValue);
+                const box = getBoxNumber(performance, potential);
+
+                return {
+                    id: `emp-${index}-${Date.now()}`,
+                    name: String(name).trim(),
+                    level: String(level).trim().toUpperCase(),
+                    performance,
+                    potential,
+                    box
+                };
+            });
+
+            closeUploadModal();
+            renderEmployees();
+            updateDistribution();
+            showToast(`Imported ${employees.length} employees`, '✓');
+        }
+
+        function parsePerformance(value) {
+            if (!value) return null;
+            const str = String(value).toLowerCase();
+            if (str.includes('exceptional')) return 'Exceptional';
+            if (str.includes('satisfactory') || str.includes('successful')) return 'Satisfactory';
+            if (str.includes('challenging')) return 'Challenging';
+            return null;
+        }
+
+        function parsePotential(value) {
+            if (!value) return null;
+            const str = String(value).toLowerCase();
+            if (str.includes('accelerate')) return 'Accelerate';
+            if (str.includes('grow')) return 'Grow';
+            if (str.includes('enable')) return 'Enable';
+            return null;
+        }
+
+        function getBoxNumber(performance, potential) {
+            if (!performance || !potential) return null;
+
+            const boxMap = {
+                'Challenging-Enable': 1,
+                'Challenging-Grow': 2,
+                'Challenging-Accelerate': 3,
+                'Satisfactory-Enable': 4,
+                'Satisfactory-Grow': 5,
+                'Satisfactory-Accelerate': 6,
+                'Exceptional-Enable': 7,
+                'Exceptional-Grow': 8,
+                'Exceptional-Accelerate': 9
+            };
+
+            return boxMap[`${performance}-${potential}`] || null;
+        }
+
+        // ============================================
+        // EXPORT
+        // ============================================
+
+        function exportToExcel() {
+            if (employees.length === 0) {
+                showToast('No employees to export', '⚠️');
+                return;
+            }
+
+            const exportData = employees.map(emp => ({
+                'Name': emp.name,
+                'Job Level': emp.level,
+                'Performance': emp.performance || 'Unplotted',
+                'Potential': emp.potential || 'Unplotted',
+                'Box': emp.box || 'Unplotted'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Calibration Results');
+            
+            const date = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `calibration-results-${date}.xlsx`);
+
+            showToast('Export complete', '✓');
+        }
+
+        // ============================================
+        // SESSION SAVE/LOAD
+        // ============================================
+
+        function saveSession() {
+            const sessionData = {
+                employees,
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(sessionData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `calibration-session-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('Session saved', '✓');
+        }
+
+        function loadSession() {
+            document.getElementById('sessionFileInput').click();
+        }
+
+        document.getElementById('sessionFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const sessionData = JSON.parse(event.target.result);
+                    employees = sessionData.employees || [];
+                    renderEmployees();
+                    updateDistribution();
+                    showToast(`Loaded ${employees.length} employees`, '✓');
+                } catch (error) {
+                    showToast('Error loading session', '⚠️');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = ''; // Reset input
+        });
+
+        // ============================================
+        // TOAST NOTIFICATIONS
+        // ============================================
+
+        function showToast(message, icon = '✓') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('.toast-icon');
+
+            toastMessage.textContent = message;
+            toastIcon.textContent = icon;
+            toast.classList.add('active');
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDragAndDrop();
+            renderEmployees();
+            updateDistribution();
+        });
+    </script>
+</body>
+</html>
