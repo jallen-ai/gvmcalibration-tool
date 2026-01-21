@@ -8,20 +8,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
-            --bg-primary: #0f1419;
-            --bg-secondary: #1a1f26;
-            --bg-tertiary: #242b35;
-            --bg-card: #2d3540;
-            --text-primary: #f7f9fa;
-            --text-secondary: #8b98a5;
-            --text-muted: #6e7a88;
-            --accent-blue: #1d9bf0;
-            --accent-green: #00ba7c;
-            --accent-yellow: #ffb800;
-            --accent-red: #f4212e;
-            --accent-purple: #7856ff;
-            --border-color: #38444d;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --bg-primary: #f5f6f8;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #eef0f3;
+            --bg-card: #ffffff;
+            --text-primary: #1a1f26;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --accent-blue: #3182ce;
+            --accent-green: #38a169;
+            --accent-yellow: #d69e2e;
+            --accent-red: #e53e3e;
+            --accent-purple: #805ad5;
+            --border-color: #e2e8f0;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --transition-fast: 0.15s ease;
             --transition-normal: 0.25s ease;
         }
@@ -42,8 +42,8 @@
 
         /* Header */
         .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
+            background: #2d3748;
+            border-bottom: 1px solid #1a202c;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -60,6 +60,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            color: #ffffff;
         }
 
         .header h1::before {
@@ -249,7 +250,7 @@
         .grid-box[data-box="7"] { --box-accent: var(--accent-blue); }
         .grid-box[data-box="6"] { --box-accent: var(--accent-green); }
         .grid-box[data-box="5"] { --box-accent: var(--accent-blue); }
-        .grid-box[data-box="4"] { --box-accent: var(--accent-yellow); }
+        .grid-box[data-box="4"] { --box-accent: var(--accent-blue); }
         .grid-box[data-box="3"] { --box-accent: var(--accent-yellow); }
         .grid-box[data-box="2"] { --box-accent: var(--accent-red); }
         .grid-box[data-box="1"] { --box-accent: var(--accent-red); }
@@ -308,14 +309,15 @@
 
         /* Employee Cards */
         .employee-card {
-            background: var(--bg-card);
+            background: #2d3748;
+            color: #ffffff;
             border-radius: 6px;
             padding: 0.375rem 0.625rem;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: grab;
             transition: all var(--transition-fast);
-            border: 1px solid transparent;
+            border: 1px solid #2d3748;
             white-space: nowrap;
             max-width: 100%;
             overflow: hidden;
@@ -323,9 +325,10 @@
         }
 
         .employee-card:hover {
-            background: var(--bg-secondary);
-            border-color: var(--border-color);
+            background: #1a202c;
+            border-color: #1a202c;
             transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         .employee-card.dragging {
@@ -815,6 +818,65 @@
         .legend-color.over { background: var(--accent-yellow); }
         .legend-color.way-over { background: var(--accent-red); }
 
+        /* Guidelines Helper */
+        .guidelines-helper {
+            margin-top: 1rem;
+            padding: 0.875rem;
+            background: #fefefe;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .guidelines-helper-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .guidelines-helper-content {
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .guidelines-helper-content p {
+            margin-bottom: 0.375rem;
+        }
+
+        .guidelines-helper-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .guidelines-status.on-target {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .guidelines-helper-content .move-suggestion {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0;
+        }
+
+        .guidelines-helper-content .move-from {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        .guidelines-helper-content .move-to {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .guidelines-helper-content .move-count {
+            font-weight: 700;
+        }
+
         /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
@@ -1045,6 +1107,27 @@
                 </div>
             </div>
 
+            <!-- Promotion Tracking Filter -->
+            <div class="panel-section">
+                <div class="panel-header">🚀 Promotion Tracking</div>
+                <div class="panel-content">
+                    <div class="filter-grid" id="promoFilterGrid">
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-promo-preapproved" checked>
+                            <label for="filter-promo-preapproved">Preapproved</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-promo-ready" checked>
+                            <label for="filter-promo-ready">Ready</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-promo-none" checked>
+                            <label for="filter-promo-none">None</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Distribution Section -->
             <div class="panel-section">
                 <div class="panel-header">📊 Distribution vs Guidelines</div>
@@ -1165,6 +1248,14 @@
                         <div class="legend-item"><div class="legend-color over"></div>Over (2-5%)</div>
                         <div class="legend-item"><div class="legend-color way-over"></div>Way over (5%+)</div>
                     </div>
+
+                    <!-- Guidelines Helper -->
+                    <div class="guidelines-helper" id="guidelinesHelper">
+                        <div class="guidelines-helper-title">📋 Recommended Changes</div>
+                        <div class="guidelines-helper-content" id="guidelinesHelperContent">
+                            <p class="guidelines-status on-target">✓ All ratings are within guidelines</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1200,6 +1291,12 @@
                     <div class="mapping-row">
                         <span class="mapping-label">Potential Column:</span>
                         <select class="mapping-select" id="potentialColumn"></select>
+                    </div>
+                    <div class="mapping-row">
+                        <span class="mapping-label">Promotion Status:</span>
+                        <select class="mapping-select" id="promotionColumn">
+                            <option value="">-- None --</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -1331,6 +1428,7 @@
 
             // Get active filters
             const activeFilters = getActiveFilters();
+            const activePromoFilters = getActivePromoFilters();
 
             // Count for display
             let plottedCount = 0;
@@ -1339,8 +1437,14 @@
             employees.forEach(employee => {
                 const card = createEmployeeCard(employee);
                 
-                // Check if employee matches filters
-                if (!activeFilters.includes(employee.level)) {
+                // Check if employee matches job level filters
+                const matchesLevel = activeFilters.includes(employee.level);
+                
+                // Check if employee matches promotion filters
+                const empPromo = employee.promotionStatus || 'None';
+                const matchesPromo = activePromoFilters.includes(empPromo);
+                
+                if (!matchesLevel || !matchesPromo) {
                     card.classList.add('hidden');
                 }
 
@@ -1366,12 +1470,16 @@
 
         function updateBoxCounts() {
             const activeFilters = getActiveFilters();
+            const activePromoFilters = getActivePromoFilters();
             
             document.querySelectorAll('.grid-box').forEach(box => {
                 const boxNum = parseInt(box.dataset.box);
                 const cards = box.querySelectorAll('.employee-card:not(.hidden)');
                 const count = cards.length;
-                const total = employees.filter(e => e.box && activeFilters.includes(e.level)).length;
+                const total = employees.filter(e => {
+                    const empPromo = e.promotionStatus || 'None';
+                    return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+                }).length;
                 const percent = total > 0 ? Math.round((count / total) * 100) : 0;
 
                 box.querySelector('[data-count]').textContent = count;
@@ -1385,7 +1493,11 @@
 
         function updateDistribution() {
             const activeFilters = getActiveFilters();
-            const plottedEmployees = employees.filter(e => e.box && activeFilters.includes(e.level));
+            const activePromoFilters = getActivePromoFilters();
+            const plottedEmployees = employees.filter(e => {
+                const empPromo = e.promotionStatus || 'None';
+                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+            });
             const total = plottedEmployees.length;
 
             if (total === 0) {
@@ -1440,7 +1552,104 @@
                 }
             });
 
+            // Update guidelines helper
+            updateGuidelinesHelper(perfCounts, potCounts, total);
+
             updateBoxCounts();
+        }
+
+        function updateGuidelinesHelper(perfCounts, potCounts, total) {
+            const helperContent = document.getElementById('guidelinesHelperContent');
+            const suggestions = [];
+
+            // Calculate performance differences
+            Object.keys(performanceTargets).forEach(perf => {
+                const actual = perfCounts[perf];
+                const targetPercent = performanceTargets[perf];
+                const targetCount = Math.round((targetPercent / 100) * total);
+                const diff = actual - targetCount;
+
+                if (Math.abs(diff) > Math.ceil(total * 0.02)) { // More than 2% off
+                    if (diff > 0) {
+                        suggestions.push({
+                            type: 'performance',
+                            from: perf,
+                            count: diff,
+                            direction: 'reduce'
+                        });
+                    } else {
+                        suggestions.push({
+                            type: 'performance',
+                            to: perf,
+                            count: Math.abs(diff),
+                            direction: 'increase'
+                        });
+                    }
+                }
+            });
+
+            // Calculate potential differences
+            Object.keys(potentialTargets).forEach(pot => {
+                const actual = potCounts[pot];
+                const targetPercent = potentialTargets[pot];
+                const targetCount = Math.round((targetPercent / 100) * total);
+                const diff = actual - targetCount;
+
+                if (Math.abs(diff) > Math.ceil(total * 0.02)) { // More than 2% off
+                    if (diff > 0) {
+                        suggestions.push({
+                            type: 'potential',
+                            from: pot,
+                            count: diff,
+                            direction: 'reduce'
+                        });
+                    } else {
+                        suggestions.push({
+                            type: 'potential',
+                            to: pot,
+                            count: Math.abs(diff),
+                            direction: 'increase'
+                        });
+                    }
+                }
+            });
+
+            // Generate helper text
+            if (suggestions.length === 0) {
+                helperContent.innerHTML = '<p class="guidelines-status on-target">✓ All ratings are within guidelines</p>';
+            } else {
+                let html = '<p style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.75rem;">To be within guidelines:</p>';
+                
+                // Group by type
+                const perfSuggestions = suggestions.filter(s => s.type === 'performance');
+                const potSuggestions = suggestions.filter(s => s.type === 'potential');
+
+                if (perfSuggestions.length > 0) {
+                    const reduces = perfSuggestions.filter(s => s.direction === 'reduce');
+                    const increases = perfSuggestions.filter(s => s.direction === 'increase');
+                    
+                    reduces.forEach(r => {
+                        const possibleTargets = increases.length > 0 
+                            ? increases.map(i => i.to).join(' or ') 
+                            : 'another rating';
+                        html += `<p class="move-suggestion">• Move <span class="move-count">${r.count}</span> from <span class="move-from">${r.from}</span> → <span class="move-to">${possibleTargets}</span></p>`;
+                    });
+                }
+
+                if (potSuggestions.length > 0) {
+                    const reduces = potSuggestions.filter(s => s.direction === 'reduce');
+                    const increases = potSuggestions.filter(s => s.direction === 'increase');
+                    
+                    reduces.forEach(r => {
+                        const possibleTargets = increases.length > 0 
+                            ? increases.map(i => i.to).join(' or ') 
+                            : 'another rating';
+                        html += `<p class="move-suggestion">• Move <span class="move-count">${r.count}</span> from <span class="move-from">${r.from}</span> → <span class="move-to">${possibleTargets}</span></p>`;
+                    });
+                }
+
+                helperContent.innerHTML = html;
+            }
         }
 
         function updateBar(barId, valId, percent, target) {
@@ -1488,6 +1697,14 @@
             return filters;
         }
 
+        function getActivePromoFilters() {
+            const filters = [];
+            if (document.getElementById('filter-promo-preapproved').checked) filters.push('Preapproved');
+            if (document.getElementById('filter-promo-ready').checked) filters.push('Ready');
+            if (document.getElementById('filter-promo-none').checked) filters.push('None');
+            return filters;
+        }
+
         function selectAllFilters() {
             document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
                 cb.checked = true;
@@ -1506,6 +1723,14 @@
 
         // Add filter change listeners
         document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                renderEmployees();
+                updateDistribution();
+            });
+        });
+
+        // Add promotion filter change listeners
+        document.querySelectorAll('#promoFilterGrid input[type="checkbox"]').forEach(cb => {
             cb.addEventListener('change', () => {
                 renderEmployees();
                 updateDistribution();
@@ -1589,11 +1814,13 @@
         }
 
         function populateColumnSelects() {
-            const selects = ['nameColumn', 'levelColumn', 'performanceColumn', 'potentialColumn'];
+            const selects = ['nameColumn', 'levelColumn', 'performanceColumn', 'potentialColumn', 'promotionColumn'];
             
             selects.forEach(selectId => {
                 const select = document.getElementById(selectId);
-                select.innerHTML = '<option value="">-- Select Column --</option>';
+                select.innerHTML = selectId === 'promotionColumn' 
+                    ? '<option value="">-- None --</option>'
+                    : '<option value="">-- Select Column --</option>';
                 
                 uploadedColumns.forEach(col => {
                     const option = document.createElement('option');
@@ -1612,7 +1839,8 @@
                 nameColumn: ['name', 'employee', 'worker', 'full name', 'employee name'],
                 levelColumn: ['level', 'job level', 'grade', 'job profile', 'profile'],
                 performanceColumn: ['performance', 'perf', 'rating', 'performance rating'],
-                potentialColumn: ['potential', 'pot', 'potential rating']
+                potentialColumn: ['potential', 'pot', 'potential rating'],
+                promotionColumn: ['promotion', 'promo', 'promotion status', 'promotion tracking']
             };
 
             const selectHints = hints[selectId] || [];
@@ -1631,6 +1859,7 @@
             const levelCol = document.getElementById('levelColumn').value;
             const perfCol = document.getElementById('performanceColumn').value;
             const potCol = document.getElementById('potentialColumn').value;
+            const promoCol = document.getElementById('promotionColumn').value;
 
             if (!nameCol) {
                 showToast('Please select a Name column', '⚠️');
@@ -1642,10 +1871,12 @@
                 const level = row[levelCol] || '';
                 const perfValue = row[perfCol] || '';
                 const potValue = row[potCol] || '';
+                const promoValue = promoCol ? (row[promoCol] || '') : '';
 
                 // Parse performance and potential from values
                 const performance = parsePerformance(perfValue);
                 const potential = parsePotential(potValue);
+                const promotionStatus = parsePromotion(promoValue);
                 const box = getBoxNumber(performance, potential);
 
                 return {
@@ -1654,6 +1885,7 @@
                     level: String(level).trim().toUpperCase(),
                     performance,
                     potential,
+                    promotionStatus,
                     box
                 };
             });
@@ -1662,6 +1894,14 @@
             renderEmployees();
             updateDistribution();
             showToast(`Imported ${employees.length} employees`, '✓');
+        }
+
+        function parsePromotion(value) {
+            if (!value) return 'None';
+            const str = String(value).toLowerCase();
+            if (str.includes('preapproved') || str.includes('pre-approved')) return 'Preapproved';
+            if (str.includes('ready')) return 'Ready';
+            return 'None';
         }
 
         function parsePerformance(value) {
@@ -1715,7 +1955,8 @@
                 'Job Level': emp.level,
                 'Performance': emp.performance || 'Unplotted',
                 'Potential': emp.potential || 'Unplotted',
-                'Box': emp.box || 'Unplotted'
+                'Box': emp.box || 'Unplotted',
+                'Promotion Status': emp.promotionStatus || 'None'
             }));
 
             const ws = XLSX.utils.json_to_sheet(exportData);
