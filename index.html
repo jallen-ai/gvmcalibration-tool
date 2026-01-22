@@ -355,11 +355,12 @@
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
+            position: relative;
         }
 
         .employee-card:hover {
             background: #1a202c;
-            border-color: #1a202c;
+            border-color: var(--accent-blue);
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
@@ -371,6 +372,22 @@
 
         .employee-card.hidden {
             display: none;
+        }
+
+        .employee-card.promo-ready {
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .employee-card.promo-preapproved {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .employee-card.has-notes::after {
+            content: '📝';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 0.6rem;
         }
 
         /* Axis Labels */
@@ -474,6 +491,45 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-top: 0.5rem;
+        }
+
+        .card-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .card-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .card-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            background: #2d3748;
+        }
+
+        .card-legend-color.promo-ready {
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .card-legend-color.promo-preapproved {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .click-hint {
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-top: 0.5rem;
+            font-style: italic;
         }
 
         /* Filters */
@@ -808,6 +864,90 @@
             gap: 0.75rem;
         }
 
+        /* Employee Edit Form */
+        .employee-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .edit-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .edit-row.highlight {
+            background: #fffbeb;
+            margin: 0.5rem -1.5rem;
+            padding: 0.875rem 1.5rem;
+            border-top: 1px solid #fcd34d;
+            border-bottom: 1px solid #fcd34d;
+        }
+
+        .edit-label {
+            width: 120px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .edit-value {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .edit-select {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: border-color var(--transition-fast);
+        }
+
+        .edit-select:hover {
+            border-color: var(--text-muted);
+        }
+
+        .edit-select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .edit-textarea {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            min-height: 80px;
+            resize: vertical;
+            transition: border-color var(--transition-fast);
+        }
+
+        .edit-textarea:hover {
+            border-color: var(--text-muted);
+        }
+
+        .edit-textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .edit-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -1107,6 +1247,12 @@
                 <div class="panel-content">
                     <div class="unplotted-box" id="unplottedBox"></div>
                     <div class="unplotted-count" id="unplottedCount">0 employees unplotted</div>
+                    <div class="card-legend">
+                        <span class="card-legend-item"><span class="card-legend-color promo-ready"></span>Ready</span>
+                        <span class="card-legend-item"><span class="card-legend-color promo-preapproved"></span>Preapproved</span>
+                        <span class="card-legend-item">📝 Has notes</span>
+                    </div>
+                    <div class="click-hint">Click any employee to edit</div>
                 </div>
             </div>
 
@@ -1408,6 +1554,82 @@
         </div>
     </div>
 
+    <!-- Employee Edit Modal -->
+    <div class="modal-overlay" id="employeeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit Employee</h2>
+                <button class="modal-close" onclick="closeEmployeeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="employee-edit-form">
+                    <div class="edit-row">
+                        <span class="edit-label">Name:</span>
+                        <span class="edit-value" id="editName">—</span>
+                    </div>
+                    <div class="edit-row">
+                        <span class="edit-label">Job Level:</span>
+                        <select class="edit-select" id="editLevel">
+                            <option value="">—</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                            <option value="M2">M2</option>
+                            <option value="M3">M3</option>
+                            <option value="M4">M4</option>
+                            <option value="M5">M5</option>
+                            <option value="M6">M6</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <span class="edit-label">Performance:</span>
+                        <select class="edit-select" id="editPerformance">
+                            <option value="">Unplotted</option>
+                            <option value="Exceptional">Exceptional</option>
+                            <option value="Successful">Successful</option>
+                            <option value="Challenging">Challenging</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <span class="edit-label">Potential:</span>
+                        <select class="edit-select" id="editPotential">
+                            <option value="">Unplotted</option>
+                            <option value="Accelerate">Accelerate</option>
+                            <option value="Grow">Grow</option>
+                            <option value="Enable">Enable</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <span class="edit-label">Region:</span>
+                        <select class="edit-select" id="editRegion">
+                            <option value="NA">NA</option>
+                            <option value="EMEA">EMEA</option>
+                            <option value="APJ">APJ</option>
+                        </select>
+                    </div>
+                    <div class="edit-row highlight">
+                        <span class="edit-label">Promotion Status:</span>
+                        <select class="edit-select" id="editPromotion">
+                            <option value="None">None</option>
+                            <option value="Ready">Ready</option>
+                            <option value="Preapproved">Preapproved</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <span class="edit-label">Notes:</span>
+                        <textarea class="edit-textarea" id="editNotes" placeholder="Add notes about this employee..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEmployeeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveEmployeeChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden file input for session load -->
     <input type="file" id="sessionFileInput" accept=".json" style="display: none;">
 
@@ -1425,6 +1647,7 @@
         let employees = [];
         let uploadedData = null;
         let uploadedColumns = [];
+        let currentEditingEmployee = null;
 
         const boxTargets = {
             1: 5, 2: 4, 3: 1,
@@ -1463,10 +1686,37 @@
             card.draggable = true;
             card.dataset.id = employee.id;
             card.textContent = employee.name;
-            card.title = `${employee.name}\nLevel: ${employee.level}\nRegion: ${employee.region || 'NA'}`;
+            
+            // Build tooltip
+            let tooltip = `${employee.name}\nLevel: ${employee.level}\nRegion: ${employee.region || 'NA'}`;
+            if (employee.promotionStatus && employee.promotionStatus !== 'None') {
+                tooltip += `\nPromotion: ${employee.promotionStatus}`;
+            }
+            if (employee.notes) {
+                tooltip += `\nNotes: ${employee.notes.substring(0, 50)}${employee.notes.length > 50 ? '...' : ''}`;
+            }
+            tooltip += '\n\nClick to edit';
+            card.title = tooltip;
+
+            // Add visual indicators
+            if (employee.promotionStatus === 'Ready') {
+                card.classList.add('promo-ready');
+            } else if (employee.promotionStatus === 'Preapproved') {
+                card.classList.add('promo-preapproved');
+            }
+            
+            if (employee.notes && employee.notes.trim()) {
+                card.classList.add('has-notes');
+            }
 
             card.addEventListener('dragstart', handleDragStart);
             card.addEventListener('dragend', handleDragEnd);
+            card.addEventListener('click', (e) => {
+                // Only open modal if not dragging
+                if (!card.classList.contains('dragging')) {
+                    openEmployeeModal(employee.id);
+                }
+            });
 
             return card;
         }
@@ -1935,6 +2185,65 @@
             uploadedColumns = [];
         }
 
+        // ============================================
+        // EMPLOYEE EDIT MODAL
+        // ============================================
+
+        function openEmployeeModal(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (!employee) return;
+
+            currentEditingEmployee = employee;
+
+            // Populate the form
+            document.getElementById('editName').textContent = employee.name;
+            document.getElementById('editLevel').value = employee.level || '';
+            document.getElementById('editPerformance').value = employee.performance || '';
+            document.getElementById('editPotential').value = employee.potential || '';
+            document.getElementById('editRegion').value = employee.region || 'NA';
+            document.getElementById('editPromotion').value = employee.promotionStatus || 'None';
+            document.getElementById('editNotes').value = employee.notes || '';
+
+            document.getElementById('employeeModal').classList.add('active');
+        }
+
+        function closeEmployeeModal() {
+            document.getElementById('employeeModal').classList.remove('active');
+            currentEditingEmployee = null;
+        }
+
+        function saveEmployeeChanges() {
+            if (!currentEditingEmployee) return;
+
+            const employee = employees.find(e => e.id === currentEditingEmployee.id);
+            if (!employee) return;
+
+            // Get values from form
+            const newLevel = document.getElementById('editLevel').value;
+            const newPerformance = document.getElementById('editPerformance').value || null;
+            const newPotential = document.getElementById('editPotential').value || null;
+            const newRegion = document.getElementById('editRegion').value || 'NA';
+            const newPromotion = document.getElementById('editPromotion').value || 'None';
+            const newNotes = document.getElementById('editNotes').value || '';
+
+            // Update employee
+            employee.level = newLevel;
+            employee.performance = newPerformance;
+            employee.potential = newPotential;
+            employee.region = newRegion;
+            employee.promotionStatus = newPromotion;
+            employee.notes = newNotes;
+
+            // Update box based on new performance/potential
+            employee.box = getBoxNumber(newPerformance, newPotential);
+
+            closeEmployeeModal();
+            renderEmployees();
+            updateDistribution();
+            autoSave();
+            showToast(`Updated ${employee.name}`, '✓');
+        }
+
         // Upload zone interactions
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
@@ -2154,7 +2463,8 @@
                 'Potential': emp.potential || 'Unplotted',
                 'Box': emp.box || 'Unplotted',
                 'Promotion Status': emp.promotionStatus || 'None',
-                'Region': emp.region || 'NA'
+                'Region': emp.region || 'NA',
+                'Notes': emp.notes || ''
             }));
 
             const ws = XLSX.utils.json_to_sheet(exportData);
