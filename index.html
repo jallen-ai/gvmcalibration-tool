@@ -280,10 +280,16 @@
         }
 
         .box-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
             line-height: 1.3;
+        }
+
+        .box-label .performance {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .box-stats {
@@ -294,21 +300,17 @@
         }
 
         .box-stats .count {
-            font-size: 1rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
         }
 
         .box-stats .percent {
-            color: var(--text-muted);
-            margin-left: 0.25rem;
+            display: block;
         }
 
         .box-stats .target {
             display: block;
-            margin-top: 0.125rem;
-            font-size: 0.6rem;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         .box-employees {
@@ -568,42 +570,16 @@
         }
 
         .distribution-values {
-            width: 55px;
+            width: 70px;
             text-align: right;
             font-family: 'Space Mono', monospace;
             color: var(--text-muted);
             flex-shrink: 0;
-            font-size: 0.7rem;
         }
 
         .distribution-values .actual {
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
-        .distribution-values .target-count {
-            color: var(--text-muted);
-        }
-
-        .distribution-diff {
-            width: 50px;
-            text-align: right;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .distribution-diff.over {
-            color: var(--accent-red);
-        }
-
-        .distribution-diff.under {
-            color: #276749;
-        }
-
-        .distribution-diff.on-target {
-            color: var(--accent-green);
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
         /* Box Distribution Grid */
@@ -1010,7 +986,7 @@
 
                 <div class="row-labels">
                     <div class="row-label">Exceptional</div>
-                    <div class="row-label">Successful</div>
+                    <div class="row-label">Satisfactory</div>
                     <div class="row-label">Challenging</div>
                 </div>
 
@@ -1018,69 +994,45 @@
                     <!-- Row 1: Exceptional -->
                     <div class="grid-box" data-box="7" data-performance="Exceptional" data-potential="Enable">
                         <div class="box-header">
-                            <div class="box-label">Box 7</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 12%</span>
-                            </div>
+                            <div class="box-label">Enable<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 12%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="8" data-performance="Exceptional" data-potential="Grow">
                         <div class="box-header">
-                            <div class="box-label">Box 8</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 9%</span>
-                            </div>
+                            <div class="box-label">Grow<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 9%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="9" data-performance="Exceptional" data-potential="Accelerate">
                         <div class="box-header">
-                            <div class="box-label">Box 9</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 4%</span>
-                            </div>
+                            <div class="box-label">Accelerate<span class="performance">Exceptional</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
 
-                    <!-- Row 2: Successful -->
-                    <div class="grid-box" data-box="4" data-performance="Successful" data-potential="Enable">
+                    <!-- Row 2: Satisfactory -->
+                    <div class="grid-box" data-box="4" data-performance="Satisfactory" data-potential="Enable">
                         <div class="box-header">
-                            <div class="box-label">Box 4</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 32%</span>
-                            </div>
+                            <div class="box-label">Enable<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 32%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
-                    <div class="grid-box" data-box="5" data-performance="Successful" data-potential="Grow">
+                    <div class="grid-box" data-box="5" data-performance="Satisfactory" data-potential="Grow">
                         <div class="box-header">
-                            <div class="box-label">Box 5</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 23%</span>
-                            </div>
+                            <div class="box-label">Grow<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 23%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
-                    <div class="grid-box" data-box="6" data-performance="Successful" data-potential="Accelerate">
+                    <div class="grid-box" data-box="6" data-performance="Satisfactory" data-potential="Accelerate">
                         <div class="box-header">
-                            <div class="box-label">Box 6</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 10%</span>
-                            </div>
+                            <div class="box-label">Accelerate<span class="performance">Satisfactory</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 10%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
@@ -1088,34 +1040,22 @@
                     <!-- Row 3: Challenging -->
                     <div class="grid-box" data-box="1" data-performance="Challenging" data-potential="Enable">
                         <div class="box-header">
-                            <div class="box-label">Box 1</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 5%</span>
-                            </div>
+                            <div class="box-label">Enable<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 5%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="2" data-performance="Challenging" data-potential="Grow">
                         <div class="box-header">
-                            <div class="box-label">Box 2</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 4%</span>
-                            </div>
+                            <div class="box-label">Grow<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="3" data-performance="Challenging" data-potential="Accelerate">
                         <div class="box-header">
-                            <div class="box-label">Box 3</div>
-                            <div class="box-stats">
-                                <span class="count" data-count>0</span>
-                                <span class="percent" data-percent>(0%)</span>
-                                <span class="target" data-target-info>Target: 1%</span>
-                            </div>
+                            <div class="box-label">Accelerate<span class="performance">Challenging</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 1%</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
@@ -1214,76 +1154,58 @@
                     <!-- By Performance Row -->
                     <div class="distribution-section">
                         <div class="distribution-title">By Performance</div>
-                        <div class="distribution-row" data-category="exceptional">
+                        <div class="distribution-row">
                             <span class="distribution-label">Exceptional</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-exceptional" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 25%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-exceptional">0</span> / <span class="target-count" id="target-exceptional">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-exceptional">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-exceptional">0%</span> / 25%</span>
                         </div>
-                        <div class="distribution-row" data-category="successful">
-                            <span class="distribution-label">Successful</span>
+                        <div class="distribution-row">
+                            <span class="distribution-label">Satisfactory</span>
                             <div class="distribution-bar-container">
-                                <div class="distribution-bar" id="bar-successful" style="width: 0%"></div>
+                                <div class="distribution-bar" id="bar-satisfactory" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 65%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-successful">0</span> / <span class="target-count" id="target-successful">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-successful">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-satisfactory">0%</span> / 65%</span>
                         </div>
-                        <div class="distribution-row" data-category="challenging">
+                        <div class="distribution-row">
                             <span class="distribution-label">Challenging</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-challenging" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 10%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-challenging">0</span> / <span class="target-count" id="target-challenging">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-challenging">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-challenging">0%</span> / 10%</span>
                         </div>
                     </div>
 
                     <!-- By Potential Column -->
                     <div class="distribution-section">
                         <div class="distribution-title">By Potential</div>
-                        <div class="distribution-row" data-category="accelerate">
+                        <div class="distribution-row">
                             <span class="distribution-label">Accelerate</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-accelerate" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 15%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-accelerate">0</span> / <span class="target-count" id="target-accelerate">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-accelerate">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-accelerate">0%</span> / 15%</span>
                         </div>
-                        <div class="distribution-row" data-category="grow">
+                        <div class="distribution-row">
                             <span class="distribution-label">Grow</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-grow" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 35%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-grow">0</span> / <span class="target-count" id="target-grow">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-grow">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-grow">0%</span> / 35%</span>
                         </div>
-                        <div class="distribution-row" data-category="enable">
+                        <div class="distribution-row">
                             <span class="distribution-label">Enable</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-enable" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 50%"></div>
                             </div>
-                            <span class="distribution-values">
-                                <span class="actual" id="val-enable">0</span> / <span class="target-count" id="target-enable">0</span>
-                            </span>
-                            <span class="distribution-diff" id="diff-enable">—</span>
+                            <span class="distribution-values"><span class="actual" id="val-enable">0%</span> / 50%</span>
                         </div>
                     </div>
 
@@ -1430,7 +1352,7 @@
 
         const performanceTargets = {
             'Exceptional': 25,
-            'Successful': 65,
+            'Satisfactory': 65,
             'Challenging': 10
         };
 
@@ -1570,43 +1492,19 @@
             const activeFilters = getActiveFilters();
             const activePromoFilters = getActivePromoFilters();
             
-            const total = employees.filter(e => {
-                const empPromo = e.promotionStatus || 'None';
-                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
-            }).length;
-            
             document.querySelectorAll('.grid-box').forEach(box => {
                 const boxNum = parseInt(box.dataset.box);
                 const cards = box.querySelectorAll('.employee-card:not(.hidden)');
                 const count = cards.length;
+                const total = employees.filter(e => {
+                    const empPromo = e.promotionStatus || 'None';
+                    return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+                }).length;
                 const percent = total > 0 ? Math.round((count / total) * 100) : 0;
-                
-                // Calculate target count
-                const targetPercent = boxTargets[boxNum];
-                const targetCount = (targetPercent / 100) * total;
-                const targetDisplay = formatTargetCount(targetCount, targetPercent);
 
                 box.querySelector('[data-count]').textContent = count;
-                box.querySelector('[data-percent]').textContent = `(${percent}%)`;
-                box.querySelector('[data-target-info]').textContent = `Target: ${targetDisplay}`;
+                box.querySelector('[data-percent]').textContent = `${percent}%`;
             });
-        }
-
-        function formatTargetCount(targetCount, targetPercent) {
-            if (targetCount === 0) {
-                return `${targetPercent}%`;
-            }
-            
-            const floor = Math.floor(targetCount);
-            const ceil = Math.ceil(targetCount);
-            
-            if (floor === ceil) {
-                // Whole number
-                return `${floor} (${targetPercent}%)`;
-            } else {
-                // Fractional - show range
-                return `${floor}-${ceil} (${targetPercent}%)`;
-            }
         }
 
         // ============================================
@@ -1629,7 +1527,7 @@
             }
 
             // Count by performance
-            const perfCounts = { 'Exceptional': 0, 'Successful': 0, 'Challenging': 0 };
+            const perfCounts = { 'Exceptional': 0, 'Satisfactory': 0, 'Challenging': 0 };
             // Count by potential
             const potCounts = { 'Accelerate': 0, 'Grow': 0, 'Enable': 0 };
             // Count by box
@@ -1642,36 +1540,24 @@
                 if (emp.box) boxCounts[emp.box]++;
             });
 
-            // Update performance bars with headcount
+            // Update performance bars
             Object.keys(perfCounts).forEach(perf => {
-                const actual = perfCounts[perf];
-                const targetPercent = performanceTargets[perf];
-                const targetCount = Math.round((targetPercent / 100) * total);
-                const percent = Math.round((actual / total) * 100);
-                const diff = actual - targetCount;
-                
+                const percent = Math.round((perfCounts[perf] / total) * 100);
+                const target = performanceTargets[perf];
                 const barId = `bar-${perf.toLowerCase()}`;
                 const valId = `val-${perf.toLowerCase()}`;
-                const targetId = `target-${perf.toLowerCase()}`;
-                const diffId = `diff-${perf.toLowerCase()}`;
                 
-                updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff);
+                updateBar(barId, valId, percent, target);
             });
 
-            // Update potential bars with headcount
+            // Update potential bars
             Object.keys(potCounts).forEach(pot => {
-                const actual = potCounts[pot];
-                const targetPercent = potentialTargets[pot];
-                const targetCount = Math.round((targetPercent / 100) * total);
-                const percent = Math.round((actual / total) * 100);
-                const diff = actual - targetCount;
-                
+                const percent = Math.round((potCounts[pot] / total) * 100);
+                const target = potentialTargets[pot];
                 const barId = `bar-${pot.toLowerCase()}`;
                 const valId = `val-${pot.toLowerCase()}`;
-                const targetId = `target-${pot.toLowerCase()}`;
-                const diffId = `diff-${pot.toLowerCase()}`;
                 
-                updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff);
+                updateBar(barId, valId, percent, target);
             });
 
             // Update box distribution
@@ -1797,39 +1683,6 @@
             }
         }
 
-        function updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff) {
-            const bar = document.getElementById(barId);
-            const val = document.getElementById(valId);
-            const targetEl = document.getElementById(targetId);
-            const diffEl = document.getElementById(diffId);
-            
-            if (bar) {
-                bar.style.width = `${Math.min(percent, 100)}%`;
-                bar.className = 'distribution-bar ' + getStatusClass(percent, targetPercent);
-            }
-            
-            if (val) {
-                val.textContent = actual;
-            }
-            
-            if (targetEl) {
-                targetEl.textContent = targetCount;
-            }
-            
-            if (diffEl) {
-                if (diff === 0) {
-                    diffEl.textContent = '✓';
-                    diffEl.className = 'distribution-diff on-target';
-                } else if (diff > 0) {
-                    diffEl.textContent = `+${diff} over`;
-                    diffEl.className = 'distribution-diff over';
-                } else {
-                    diffEl.textContent = `${diff} under`;
-                    diffEl.className = 'distribution-diff under';
-                }
-            }
-        }
-
         function getStatusClass(actual, target) {
             const diff = actual - target;
             if (diff < -2) return 'under';
@@ -1844,25 +1697,12 @@
                 bar.className = 'distribution-bar under';
             });
             document.querySelectorAll('.distribution-values .actual').forEach(val => {
-                val.textContent = '0';
-            });
-            document.querySelectorAll('.distribution-values .target-count').forEach(val => {
-                val.textContent = '0';
-            });
-            document.querySelectorAll('.distribution-diff').forEach(diff => {
-                diff.textContent = '—';
-                diff.className = 'distribution-diff';
+                val.textContent = '0%';
             });
             document.querySelectorAll('.box-dist-item').forEach(item => {
                 item.querySelector('.box-actual').textContent = '0%';
                 item.className = 'box-dist-item under';
             });
-            // Reset guidelines helper
-            const helperContent = document.getElementById('guidelinesHelperContent');
-            if (helperContent) {
-                helperContent.innerHTML = '<p class="guidelines-status on-target">✓ All ratings are within guidelines</p>';
-            }
-        }
         }
 
         // ============================================
@@ -2089,7 +1929,7 @@
             if (!value) return null;
             const str = String(value).toLowerCase();
             if (str.includes('exceptional')) return 'Exceptional';
-            if (str.includes('successful') || str.includes('successful')) return 'Successful';
+            if (str.includes('satisfactory') || str.includes('successful')) return 'Satisfactory';
             if (str.includes('challenging')) return 'Challenging';
             return null;
         }
@@ -2110,9 +1950,9 @@
                 'Challenging-Enable': 1,
                 'Challenging-Grow': 2,
                 'Challenging-Accelerate': 3,
-                'Successful-Enable': 4,
-                'Successful-Grow': 5,
-                'Successful-Accelerate': 6,
+                'Satisfactory-Enable': 4,
+                'Satisfactory-Grow': 5,
+                'Satisfactory-Accelerate': 6,
                 'Exceptional-Enable': 7,
                 'Exceptional-Grow': 8,
                 'Exceptional-Accelerate': 9
