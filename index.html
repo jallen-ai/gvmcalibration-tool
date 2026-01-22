@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -313,6 +312,24 @@
             opacity: 0.7;
         }
 
+        .box-stats .variance {
+            display: block;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .box-stats .variance.over {
+            color: var(--accent-red);
+        }
+
+        .box-stats .variance.under {
+            color: var(--accent-blue);
+        }
+
+        .box-stats .variance.on-target {
+            color: var(--accent-green);
+        }
+
         .box-employees {
             flex: 1;
             overflow-y: auto;
@@ -570,16 +587,36 @@
         }
 
         .distribution-values {
-            width: 70px;
+            width: 100px;
             text-align: right;
             font-family: 'Space Mono', monospace;
             color: var(--text-muted);
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
         .distribution-values .actual {
             color: var(--text-secondary);
             font-weight: 600;
+        }
+
+        .distribution-values .variance {
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .distribution-values .variance.over {
+            color: var(--accent-red);
+        }
+
+        .distribution-values .variance.under {
+            color: var(--accent-blue);
+        }
+
+        .distribution-values .variance.on-target {
+            color: var(--accent-green);
         }
 
         /* Box Distribution Grid */
@@ -986,7 +1023,7 @@
 
                 <div class="row-labels">
                     <div class="row-label">Exceptional</div>
-                    <div class="row-label">Satisfactory</div>
+                    <div class="row-label">Successful</div>
                     <div class="row-label">Challenging</div>
                 </div>
 
@@ -995,44 +1032,44 @@
                     <div class="grid-box" data-box="7" data-performance="Exceptional" data-potential="Enable">
                         <div class="box-header">
                             <div class="box-label">Enable<span class="performance">Exceptional</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 12%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 12%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="8" data-performance="Exceptional" data-potential="Grow">
                         <div class="box-header">
                             <div class="box-label">Grow<span class="performance">Exceptional</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 9%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 9%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="9" data-performance="Exceptional" data-potential="Accelerate">
                         <div class="box-header">
                             <div class="box-label">Accelerate<span class="performance">Exceptional</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
 
-                    <!-- Row 2: Satisfactory -->
-                    <div class="grid-box" data-box="4" data-performance="Satisfactory" data-potential="Enable">
+                    <!-- Row 2: Successful -->
+                    <div class="grid-box" data-box="4" data-performance="Successful" data-potential="Enable">
                         <div class="box-header">
-                            <div class="box-label">Enable<span class="performance">Satisfactory</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 32%</span></div>
+                            <div class="box-label">Enable<span class="performance">Successful</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 32%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
-                    <div class="grid-box" data-box="5" data-performance="Satisfactory" data-potential="Grow">
+                    <div class="grid-box" data-box="5" data-performance="Successful" data-potential="Grow">
                         <div class="box-header">
-                            <div class="box-label">Grow<span class="performance">Satisfactory</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 23%</span></div>
+                            <div class="box-label">Grow<span class="performance">Successful</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 23%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
-                    <div class="grid-box" data-box="6" data-performance="Satisfactory" data-potential="Accelerate">
+                    <div class="grid-box" data-box="6" data-performance="Successful" data-potential="Accelerate">
                         <div class="box-header">
-                            <div class="box-label">Accelerate<span class="performance">Satisfactory</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 10%</span></div>
+                            <div class="box-label">Accelerate<span class="performance">Successful</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 10%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
@@ -1041,21 +1078,21 @@
                     <div class="grid-box" data-box="1" data-performance="Challenging" data-potential="Enable">
                         <div class="box-header">
                             <div class="box-label">Enable<span class="performance">Challenging</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 5%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 5%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="2" data-performance="Challenging" data-potential="Grow">
                         <div class="box-header">
                             <div class="box-label">Grow<span class="performance">Challenging</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 4%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
                     <div class="grid-box" data-box="3" data-performance="Challenging" data-potential="Accelerate">
                         <div class="box-header">
                             <div class="box-label">Accelerate<span class="performance">Challenging</span></div>
-                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 1%</span></div>
+                            <div class="box-stats"><span class="count" data-count>0</span><span class="percent" data-percent>0%</span><span class="target">Target: 1%</span><span class="variance on-target" data-variance>—</span></div>
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
@@ -1160,15 +1197,21 @@
                                 <div class="distribution-bar" id="bar-exceptional" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 25%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-exceptional">0%</span> / 25%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-exceptional">0%</span> / 25%</span>
+                                <span class="variance on-target" id="var-exceptional">—</span>
+                            </div>
                         </div>
                         <div class="distribution-row">
-                            <span class="distribution-label">Satisfactory</span>
+                            <span class="distribution-label">Successful</span>
                             <div class="distribution-bar-container">
-                                <div class="distribution-bar" id="bar-satisfactory" style="width: 0%"></div>
+                                <div class="distribution-bar" id="bar-successful" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 65%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-satisfactory">0%</span> / 65%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-successful">0%</span> / 65%</span>
+                                <span class="variance on-target" id="var-successful">—</span>
+                            </div>
                         </div>
                         <div class="distribution-row">
                             <span class="distribution-label">Challenging</span>
@@ -1176,7 +1219,10 @@
                                 <div class="distribution-bar" id="bar-challenging" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 10%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-challenging">0%</span> / 10%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-challenging">0%</span> / 10%</span>
+                                <span class="variance on-target" id="var-challenging">—</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1189,7 +1235,10 @@
                                 <div class="distribution-bar" id="bar-accelerate" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 15%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-accelerate">0%</span> / 15%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-accelerate">0%</span> / 15%</span>
+                                <span class="variance on-target" id="var-accelerate">—</span>
+                            </div>
                         </div>
                         <div class="distribution-row">
                             <span class="distribution-label">Grow</span>
@@ -1197,7 +1246,10 @@
                                 <div class="distribution-bar" id="bar-grow" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 35%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-grow">0%</span> / 35%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-grow">0%</span> / 35%</span>
+                                <span class="variance on-target" id="var-grow">—</span>
+                            </div>
                         </div>
                         <div class="distribution-row">
                             <span class="distribution-label">Enable</span>
@@ -1205,7 +1257,10 @@
                                 <div class="distribution-bar" id="bar-enable" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 50%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-enable">0%</span> / 50%</span>
+                            <div class="distribution-values">
+                                <span><span class="actual" id="val-enable">0%</span> / 50%</span>
+                                <span class="variance on-target" id="var-enable">—</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1352,7 +1407,7 @@
 
         const performanceTargets = {
             'Exceptional': 25,
-            'Satisfactory': 65,
+            'Successful': 65,
             'Challenging': 10
         };
 
@@ -1492,18 +1547,40 @@
             const activeFilters = getActiveFilters();
             const activePromoFilters = getActivePromoFilters();
             
+            const total = employees.filter(e => {
+                const empPromo = e.promotionStatus || 'None';
+                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+            }).length;
+            
             document.querySelectorAll('.grid-box').forEach(box => {
                 const boxNum = parseInt(box.dataset.box);
                 const cards = box.querySelectorAll('.employee-card:not(.hidden)');
                 const count = cards.length;
-                const total = employees.filter(e => {
-                    const empPromo = e.promotionStatus || 'None';
-                    return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
-                }).length;
                 const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                const target = boxTargets[boxNum];
+                
+                // Calculate variance in # of employees
+                const targetCount = total > 0 ? Math.round((target / 100) * total) : 0;
+                const variance = count - targetCount;
 
                 box.querySelector('[data-count]').textContent = count;
                 box.querySelector('[data-percent]').textContent = `${percent}%`;
+                
+                // Update variance display
+                const varianceEl = box.querySelector('[data-variance]');
+                if (total === 0) {
+                    varianceEl.textContent = '—';
+                    varianceEl.className = 'variance on-target';
+                } else if (variance === 0) {
+                    varianceEl.textContent = '✓ On target';
+                    varianceEl.className = 'variance on-target';
+                } else if (variance > 0) {
+                    varianceEl.textContent = `+${variance} over`;
+                    varianceEl.className = 'variance over';
+                } else {
+                    varianceEl.textContent = `${variance} under`;
+                    varianceEl.className = 'variance under';
+                }
             });
         }
 
@@ -1527,7 +1604,7 @@
             }
 
             // Count by performance
-            const perfCounts = { 'Exceptional': 0, 'Satisfactory': 0, 'Challenging': 0 };
+            const perfCounts = { 'Exceptional': 0, 'Successful': 0, 'Challenging': 0 };
             // Count by potential
             const potCounts = { 'Accelerate': 0, 'Grow': 0, 'Enable': 0 };
             // Count by box
@@ -1542,22 +1619,30 @@
 
             // Update performance bars
             Object.keys(perfCounts).forEach(perf => {
-                const percent = Math.round((perfCounts[perf] / total) * 100);
+                const count = perfCounts[perf];
+                const percent = Math.round((count / total) * 100);
                 const target = performanceTargets[perf];
+                const targetCount = Math.round((target / 100) * total);
+                const variance = count - targetCount;
                 const barId = `bar-${perf.toLowerCase()}`;
                 const valId = `val-${perf.toLowerCase()}`;
+                const varId = `var-${perf.toLowerCase()}`;
                 
-                updateBar(barId, valId, percent, target);
+                updateBar(barId, valId, varId, percent, target, variance, total);
             });
 
             // Update potential bars
             Object.keys(potCounts).forEach(pot => {
-                const percent = Math.round((potCounts[pot] / total) * 100);
+                const count = potCounts[pot];
+                const percent = Math.round((count / total) * 100);
                 const target = potentialTargets[pot];
+                const targetCount = Math.round((target / 100) * total);
+                const variance = count - targetCount;
                 const barId = `bar-${pot.toLowerCase()}`;
                 const valId = `val-${pot.toLowerCase()}`;
+                const varId = `var-${pot.toLowerCase()}`;
                 
-                updateBar(barId, valId, percent, target);
+                updateBar(barId, valId, varId, percent, target, variance, total);
             });
 
             // Update box distribution
@@ -1672,14 +1757,31 @@
             }
         }
 
-        function updateBar(barId, valId, percent, target) {
+        function updateBar(barId, valId, varId, percent, target, variance, total) {
             const bar = document.getElementById(barId);
             const val = document.getElementById(valId);
+            const varEl = document.getElementById(varId);
             
             if (bar && val) {
                 bar.style.width = `${Math.min(percent, 100)}%`;
                 bar.className = 'distribution-bar ' + getStatusClass(percent, target);
                 val.textContent = `${percent}%`;
+            }
+            
+            if (varEl) {
+                if (total === 0) {
+                    varEl.textContent = '—';
+                    varEl.className = 'variance on-target';
+                } else if (variance === 0) {
+                    varEl.textContent = '✓ On target';
+                    varEl.className = 'variance on-target';
+                } else if (variance > 0) {
+                    varEl.textContent = `+${variance} over`;
+                    varEl.className = 'variance over';
+                } else {
+                    varEl.textContent = `${variance} under`;
+                    varEl.className = 'variance under';
+                }
             }
         }
 
@@ -1699,9 +1801,17 @@
             document.querySelectorAll('.distribution-values .actual').forEach(val => {
                 val.textContent = '0%';
             });
+            document.querySelectorAll('.distribution-values .variance').forEach(varEl => {
+                varEl.textContent = '—';
+                varEl.className = 'variance on-target';
+            });
             document.querySelectorAll('.box-dist-item').forEach(item => {
                 item.querySelector('.box-actual').textContent = '0%';
                 item.className = 'box-dist-item under';
+            });
+            document.querySelectorAll('.box-stats .variance').forEach(varEl => {
+                varEl.textContent = '—';
+                varEl.className = 'variance on-target';
             });
         }
 
@@ -1929,7 +2039,7 @@
             if (!value) return null;
             const str = String(value).toLowerCase();
             if (str.includes('exceptional')) return 'Exceptional';
-            if (str.includes('satisfactory') || str.includes('successful')) return 'Satisfactory';
+            if (str.includes('successful') || str.includes('satisfactory')) return 'Successful';
             if (str.includes('challenging')) return 'Challenging';
             return null;
         }
@@ -1950,9 +2060,9 @@
                 'Challenging-Enable': 1,
                 'Challenging-Grow': 2,
                 'Challenging-Accelerate': 3,
-                'Satisfactory-Enable': 4,
-                'Satisfactory-Grow': 5,
-                'Satisfactory-Accelerate': 6,
+                'Successful-Enable': 4,
+                'Successful-Grow': 5,
+                'Successful-Accelerate': 6,
                 'Exceptional-Enable': 7,
                 'Exceptional-Grow': 8,
                 'Exceptional-Accelerate': 9
