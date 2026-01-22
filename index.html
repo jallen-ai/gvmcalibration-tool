@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -180,127 +181,6 @@
             background: var(--bg-tertiary);
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
-        }
-
-        /* Tabs */
-        .tab-navigation {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .tab-btn {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .tab-btn:hover {
-            background: var(--bg-card);
-            color: var(--text-primary);
-        }
-
-        .tab-btn.active {
-            background: var(--accent-blue);
-            color: white;
-            border-color: var(--accent-blue);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Table View */
-        .table-container {
-            overflow-x: auto;
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8125rem;
-        }
-
-        .data-table thead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .data-table th {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            font-weight: 600;
-            text-align: left;
-            padding: 0.75rem 0.5rem;
-            border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
-        }
-
-        .data-table td {
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-
-        .data-table tbody tr:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .data-table select,
-        .data-table input[type="checkbox"] {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8125rem;
-        }
-
-        .data-table select {
-            padding: 0.375rem 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            cursor: pointer;
-            min-width: 120px;
-        }
-
-        .data-table select:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-
-        .data-table input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-blue);
-            cursor: pointer;
-        }
-
-        .data-table .employee-name {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .data-table .grade-cell {
-            font-family: 'Space Mono', monospace;
-            font-weight: 600;
-        }
-
-        .data-table .box-cell {
-            font-family: 'Space Mono', monospace;
-            font-weight: 700;
-            text-align: center;
         }
 
         /* 9-Box Grid */
@@ -1116,44 +996,39 @@
     <main class="main-container">
         <div class="grid-container">
             <div class="grid-header">
-                <div class="tab-navigation">
-                    <button class="tab-btn active" data-tab="grid" onclick="switchTab('grid')">📊 9-Box Grid</button>
-                    <button class="tab-btn" data-tab="table" onclick="switchTab('table')">📋 Table View</button>
-                </div>
+                <span class="grid-title">Performance × Potential Matrix</span>
                 <span class="employee-count" id="employeeCount">0 employees plotted</span>
             </div>
             
-            <!-- Grid View -->
-            <div class="tab-content active" id="gridView">
-                <div class="grid-with-labels">
-                    <div class="corner-spacer"></div>
-                    <div class="column-labels">
-                        <div class="column-label">Enable in Role</div>
-                        <div class="column-label">Grow</div>
-                        <div class="column-label">Accelerate</div>
-                    </div>
+            <div class="grid-with-labels">
+                <div class="corner-spacer"></div>
+                <div class="column-labels">
+                    <div class="column-label">Enable in Role</div>
+                    <div class="column-label">Grow</div>
+                    <div class="column-label">Accelerate</div>
+                </div>
 
-                    <div class="row-labels">
-                        <div class="row-label">Exceptional</div>
-                        <div class="row-label">Successful</div>
-                        <div class="row-label">Challenging</div>
-                    </div>
+                <div class="row-labels">
+                    <div class="row-label">Exceptional</div>
+                    <div class="row-label">Successful</div>
+                    <div class="row-label">Challenging</div>
+                </div>
 
-                    <div class="nine-box-grid" id="nineBoxGrid">
-                        <!-- Row 1: Exceptional -->
-                        <div class="grid-box" data-box="7" data-performance="Exceptional" data-potential="Enable">
-                            <div class="box-header">
-                                <div class="box-label">Box 7</div>
-                                <div class="box-stats">
-                                    <span class="count" data-count>0</span>
-                                    <span class="percent" data-percent>(0%)</span>
-                                    <span class="target" data-target-info>Target: 12%</span>
-                                </div>
+                <div class="nine-box-grid" id="nineBoxGrid">
+                    <!-- Row 1: Exceptional -->
+                    <div class="grid-box" data-box="7" data-performance="Exceptional" data-potential="Enable">
+                        <div class="box-header">
+                            <div class="box-label">Box 7</div>
+                            <div class="box-stats">
+                                <span class="count" data-count>0</span>
+                                <span class="percent" data-percent>(0%)</span>
+                                <span class="target" data-target-info>Target: 12%</span>
                             </div>
-                            <div class="box-employees" data-employees></div>
                         </div>
-                        <div class="grid-box" data-box="8" data-performance="Exceptional" data-potential="Grow">
-                            <div class="box-header">
+                        <div class="box-employees" data-employees></div>
+                    </div>
+                    <div class="grid-box" data-box="8" data-performance="Exceptional" data-potential="Grow">
+                        <div class="box-header">
                             <div class="box-label">Box 8</div>
                             <div class="box-stats">
                                 <span class="count" data-count>0</span>
@@ -1244,28 +1119,6 @@
                         </div>
                         <div class="box-employees" data-employees></div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Table View -->
-            <div class="tab-content" id="tableView">
-                <div class="table-container">
-                    <table class="data-table" id="employeeTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Grade</th>
-                                <th>Performance</th>
-                                <th>Potential</th>
-                                <th>Box</th>
-                                <th>Promo Preapproved</th>
-                                <th>Promo Ready</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employeeTableBody">
-                            <!-- Populated by JavaScript -->
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -2284,8 +2137,7 @@
                 'Performance': emp.performance || 'Unplotted',
                 'Potential': emp.potential || 'Unplotted',
                 'Box': emp.box || 'Unplotted',
-                'Promo Preapproved': emp.promoPreapproved ? 'Yes' : '',
-                'Promo Ready': emp.promoReady ? 'Yes' : ''
+                'Promotion Status': emp.promotionStatus || 'None'
             }));
 
             const ws = XLSX.utils.json_to_sheet(exportData);
@@ -2437,127 +2289,6 @@
                     showToast(`Restored ${count} employees`, '✓');
                 }
             }
-        }
-
-        // ============================================
-        // TAB SWITCHING
-        // ============================================
-
-        window.switchTab = function(tabName) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.tab === tabName) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            if (tabName === 'grid') {
-                document.getElementById('gridView').classList.add('active');
-            } else if (tabName === 'table') {
-                document.getElementById('tableView').classList.add('active');
-                renderTable();
-            }
-        }
-
-        // ============================================
-        // TABLE VIEW
-        // ============================================
-
-        function renderTable() {
-            const tbody = document.getElementById('employeeTableBody');
-            const activeFilters = getActiveFilters();
-            const activePromoFilters = getActivePromoFilters();
-
-            // Filter employees that are plotted
-            const plottedEmployees = employees.filter(e => {
-                const empPromo = e.promotionStatus || 'None';
-                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
-            });
-
-            // Sort by box number, then by name
-            plottedEmployees.sort((a, b) => {
-                if (a.box !== b.box) return a.box - b.box;
-                return a.name.localeCompare(b.name);
-            });
-
-            tbody.innerHTML = plottedEmployees.map(emp => `
-                <tr data-employee-id="${emp.id}">
-                    <td class="employee-name">${emp.name}</td>
-                    <td class="grade-cell">${emp.level}</td>
-                    <td>
-                        <select onchange="updateEmployeeFromTable('${emp.id}', 'performance', this.value)">
-                            <option value="" ${!emp.performance ? 'selected' : ''}>--</option>
-                            <option value="Exceptional" ${emp.performance === 'Exceptional' ? 'selected' : ''}>Exceptional</option>
-                            <option value="Successful" ${emp.performance === 'Successful' ? 'selected' : ''}>Successful</option>
-                            <option value="Challenging" ${emp.performance === 'Challenging' ? 'selected' : ''}>Challenging</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select onchange="updateEmployeeFromTable('${emp.id}', 'potential', this.value)">
-                            <option value="" ${!emp.potential ? 'selected' : ''}>--</option>
-                            <option value="Accelerate" ${emp.potential === 'Accelerate' ? 'selected' : ''}>Accelerate</option>
-                            <option value="Grow" ${emp.potential === 'Grow' ? 'selected' : ''}>Grow</option>
-                            <option value="Enable" ${emp.potential === 'Enable' ? 'selected' : ''}>Enable</option>
-                        </select>
-                    </td>
-                    <td class="box-cell">${emp.box || '-'}</td>
-                    <td style="text-align: center;">
-                        <input type="checkbox" 
-                               ${emp.promoPreapproved ? 'checked' : ''} 
-                               onchange="updateEmployeeFromTable('${emp.id}', 'promoPreapproved', this.checked)">
-                    </td>
-                    <td style="text-align: center;">
-                        <input type="checkbox" 
-                               ${emp.promoReady ? 'checked' : ''} 
-                               onchange="updateEmployeeFromTable('${emp.id}', 'promoReady', this.checked)">
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        window.updateEmployeeFromTable = function(employeeId, field, value) {
-            const employee = employees.find(e => e.id === employeeId);
-            if (!employee) return;
-
-            if (field === 'performance') {
-                employee.performance = value || null;
-                employee.box = getBoxNumber(employee.performance, employee.potential);
-            } else if (field === 'potential') {
-                employee.potential = value || null;
-                employee.box = getBoxNumber(employee.performance, employee.potential);
-            } else if (field === 'promoPreapproved') {
-                employee.promoPreapproved = value;
-                // Update promotionStatus for filtering
-                if (value) {
-                    employee.promotionStatus = 'Preapproved';
-                } else if (employee.promoReady) {
-                    employee.promotionStatus = 'Ready';
-                } else {
-                    employee.promotionStatus = 'None';
-                }
-            } else if (field === 'promoReady') {
-                employee.promoReady = value;
-                // Update promotionStatus for filtering (Preapproved takes precedence)
-                if (employee.promoPreapproved) {
-                    employee.promotionStatus = 'Preapproved';
-                } else if (value) {
-                    employee.promotionStatus = 'Ready';
-                } else {
-                    employee.promotionStatus = 'None';
-                }
-            }
-
-            // Re-render both views
-            renderEmployees();
-            updateDistribution();
-            renderTable();
-            autoSave();
         }
 
         // ============================================
