@@ -1246,7 +1246,6 @@
                     </div>
                 </div>
             </div>
-            </div>
 
             <!-- Table View -->
             <div class="tab-content" id="tableView">
@@ -2444,7 +2443,7 @@
         // TAB SWITCHING
         // ============================================
 
-        function switchTab(tabName) {
+        window.switchTab = function(tabName) {
             // Update tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -2522,7 +2521,7 @@
             `).join('');
         }
 
-        function updateEmployeeFromTable(employeeId, field, value) {
+        window.updateEmployeeFromTable = function(employeeId, field, value) {
             const employee = employees.find(e => e.id === employeeId);
             if (!employee) return;
 
