@@ -569,16 +569,42 @@
         }
 
         .distribution-values {
-            width: 70px;
+            width: 55px;
             text-align: right;
             font-family: 'Space Mono', monospace;
             color: var(--text-muted);
             flex-shrink: 0;
+            font-size: 0.7rem;
         }
 
         .distribution-values .actual {
-            color: var(--text-secondary);
-            font-weight: 600;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .distribution-values .target-count {
+            color: var(--text-muted);
+        }
+
+        .distribution-diff {
+            width: 50px;
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .distribution-diff.over {
+            color: var(--accent-red);
+        }
+
+        .distribution-diff.under {
+            color: #276749;
+        }
+
+        .distribution-diff.on-target {
+            color: var(--accent-green);
         }
 
         /* Box Distribution Grid */
@@ -1153,58 +1179,76 @@
                     <!-- By Performance Row -->
                     <div class="distribution-section">
                         <div class="distribution-title">By Performance</div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="exceptional">
                             <span class="distribution-label">Exceptional</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-exceptional" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 25%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-exceptional">0%</span> / 25%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-exceptional">0</span> / <span class="target-count" id="target-exceptional">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-exceptional">—</span>
                         </div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="satisfactory">
                             <span class="distribution-label">Satisfactory</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-satisfactory" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 65%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-satisfactory">0%</span> / 65%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-satisfactory">0</span> / <span class="target-count" id="target-satisfactory">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-satisfactory">—</span>
                         </div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="challenging">
                             <span class="distribution-label">Challenging</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-challenging" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 10%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-challenging">0%</span> / 10%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-challenging">0</span> / <span class="target-count" id="target-challenging">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-challenging">—</span>
                         </div>
                     </div>
 
                     <!-- By Potential Column -->
                     <div class="distribution-section">
                         <div class="distribution-title">By Potential</div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="accelerate">
                             <span class="distribution-label">Accelerate</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-accelerate" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 15%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-accelerate">0%</span> / 15%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-accelerate">0</span> / <span class="target-count" id="target-accelerate">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-accelerate">—</span>
                         </div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="grow">
                             <span class="distribution-label">Grow</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-grow" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 35%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-grow">0%</span> / 35%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-grow">0</span> / <span class="target-count" id="target-grow">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-grow">—</span>
                         </div>
-                        <div class="distribution-row">
+                        <div class="distribution-row" data-category="enable">
                             <span class="distribution-label">Enable</span>
                             <div class="distribution-bar-container">
                                 <div class="distribution-bar" id="bar-enable" style="width: 0%"></div>
                                 <div class="distribution-target" style="left: 50%"></div>
                             </div>
-                            <span class="distribution-values"><span class="actual" id="val-enable">0%</span> / 50%</span>
+                            <span class="distribution-values">
+                                <span class="actual" id="val-enable">0</span> / <span class="target-count" id="target-enable">0</span>
+                            </span>
+                            <span class="distribution-diff" id="diff-enable">—</span>
                         </div>
                     </div>
 
@@ -1539,24 +1583,36 @@
                 if (emp.box) boxCounts[emp.box]++;
             });
 
-            // Update performance bars
+            // Update performance bars with headcount
             Object.keys(perfCounts).forEach(perf => {
-                const percent = Math.round((perfCounts[perf] / total) * 100);
-                const target = performanceTargets[perf];
+                const actual = perfCounts[perf];
+                const targetPercent = performanceTargets[perf];
+                const targetCount = Math.round((targetPercent / 100) * total);
+                const percent = Math.round((actual / total) * 100);
+                const diff = actual - targetCount;
+                
                 const barId = `bar-${perf.toLowerCase()}`;
                 const valId = `val-${perf.toLowerCase()}`;
+                const targetId = `target-${perf.toLowerCase()}`;
+                const diffId = `diff-${perf.toLowerCase()}`;
                 
-                updateBar(barId, valId, percent, target);
+                updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff);
             });
 
-            // Update potential bars
+            // Update potential bars with headcount
             Object.keys(potCounts).forEach(pot => {
-                const percent = Math.round((potCounts[pot] / total) * 100);
-                const target = potentialTargets[pot];
+                const actual = potCounts[pot];
+                const targetPercent = potentialTargets[pot];
+                const targetCount = Math.round((targetPercent / 100) * total);
+                const percent = Math.round((actual / total) * 100);
+                const diff = actual - targetCount;
+                
                 const barId = `bar-${pot.toLowerCase()}`;
                 const valId = `val-${pot.toLowerCase()}`;
+                const targetId = `target-${pot.toLowerCase()}`;
+                const diffId = `diff-${pot.toLowerCase()}`;
                 
-                updateBar(barId, valId, percent, target);
+                updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff);
             });
 
             // Update box distribution
@@ -1682,6 +1738,39 @@
             }
         }
 
+        function updateBarWithHeadcount(barId, valId, targetId, diffId, actual, targetCount, percent, targetPercent, diff) {
+            const bar = document.getElementById(barId);
+            const val = document.getElementById(valId);
+            const targetEl = document.getElementById(targetId);
+            const diffEl = document.getElementById(diffId);
+            
+            if (bar) {
+                bar.style.width = `${Math.min(percent, 100)}%`;
+                bar.className = 'distribution-bar ' + getStatusClass(percent, targetPercent);
+            }
+            
+            if (val) {
+                val.textContent = actual;
+            }
+            
+            if (targetEl) {
+                targetEl.textContent = targetCount;
+            }
+            
+            if (diffEl) {
+                if (diff === 0) {
+                    diffEl.textContent = '✓';
+                    diffEl.className = 'distribution-diff on-target';
+                } else if (diff > 0) {
+                    diffEl.textContent = `+${diff} over`;
+                    diffEl.className = 'distribution-diff over';
+                } else {
+                    diffEl.textContent = `${diff} under`;
+                    diffEl.className = 'distribution-diff under';
+                }
+            }
+        }
+
         function getStatusClass(actual, target) {
             const diff = actual - target;
             if (diff < -2) return 'under';
@@ -1696,12 +1785,25 @@
                 bar.className = 'distribution-bar under';
             });
             document.querySelectorAll('.distribution-values .actual').forEach(val => {
-                val.textContent = '0%';
+                val.textContent = '0';
+            });
+            document.querySelectorAll('.distribution-values .target-count').forEach(val => {
+                val.textContent = '0';
+            });
+            document.querySelectorAll('.distribution-diff').forEach(diff => {
+                diff.textContent = '—';
+                diff.className = 'distribution-diff';
             });
             document.querySelectorAll('.box-dist-item').forEach(item => {
                 item.querySelector('.box-actual').textContent = '0%';
                 item.className = 'box-dist-item under';
             });
+            // Reset guidelines helper
+            const helperContent = document.getElementById('guidelinesHelperContent');
+            if (helperContent) {
+                helperContent.innerHTML = '<p class="guidelines-status on-target">✓ All ratings are within guidelines</p>';
+            }
+        }
         }
 
         // ============================================
