@@ -1184,6 +1184,27 @@
                 </div>
             </div>
 
+            <!-- Region Filter -->
+            <div class="panel-section">
+                <div class="panel-header">🌍 Region</div>
+                <div class="panel-content">
+                    <div class="filter-grid" id="regionFilterGrid">
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-region-emea" checked>
+                            <label for="filter-region-emea">EMEA</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-region-apj" checked>
+                            <label for="filter-region-apj">APJ</label>
+                        </div>
+                        <div class="filter-item">
+                            <input type="checkbox" id="filter-region-na" checked>
+                            <label for="filter-region-na">NA</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Distribution Section -->
             <div class="panel-section">
                 <div class="panel-header">📊 Distribution vs Guidelines</div>
@@ -1372,6 +1393,12 @@
                             <option value="">-- None --</option>
                         </select>
                     </div>
+                    <div class="mapping-row">
+                        <span class="mapping-label">Region:</span>
+                        <select class="mapping-select" id="regionColumn">
+                            <option value="">-- None --</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1436,7 +1463,7 @@
             card.draggable = true;
             card.dataset.id = employee.id;
             card.textContent = employee.name;
-            card.title = `${employee.name}\nLevel: ${employee.level}`;
+            card.title = `${employee.name}\nLevel: ${employee.level}\nRegion: ${employee.region || 'NA'}`;
 
             card.addEventListener('dragstart', handleDragStart);
             card.addEventListener('dragend', handleDragEnd);
@@ -1504,6 +1531,7 @@
             // Get active filters
             const activeFilters = getActiveFilters();
             const activePromoFilters = getActivePromoFilters();
+            const activeRegionFilters = getActiveRegionFilters();
 
             // Count for display
             let plottedCount = 0;
@@ -1519,7 +1547,11 @@
                 const empPromo = employee.promotionStatus || 'None';
                 const matchesPromo = activePromoFilters.includes(empPromo);
                 
-                if (!matchesLevel || !matchesPromo) {
+                // Check if employee matches region filters
+                const empRegion = employee.region || 'NA';
+                const matchesRegion = activeRegionFilters.includes(empRegion);
+                
+                if (!matchesLevel || !matchesPromo || !matchesRegion) {
                     card.classList.add('hidden');
                 }
 
@@ -1546,10 +1578,12 @@
         function updateBoxCounts() {
             const activeFilters = getActiveFilters();
             const activePromoFilters = getActivePromoFilters();
+            const activeRegionFilters = getActiveRegionFilters();
             
             const total = employees.filter(e => {
                 const empPromo = e.promotionStatus || 'None';
-                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+                const empRegion = e.region || 'NA';
+                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo) && activeRegionFilters.includes(empRegion);
             }).length;
             
             document.querySelectorAll('.grid-box').forEach(box => {
@@ -1591,9 +1625,11 @@
         function updateDistribution() {
             const activeFilters = getActiveFilters();
             const activePromoFilters = getActivePromoFilters();
+            const activeRegionFilters = getActiveRegionFilters();
             const plottedEmployees = employees.filter(e => {
                 const empPromo = e.promotionStatus || 'None';
-                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo);
+                const empRegion = e.region || 'NA';
+                return e.box && activeFilters.includes(e.level) && activePromoFilters.includes(empPromo) && activeRegionFilters.includes(empRegion);
             });
             const total = plottedEmployees.length;
 
@@ -1835,6 +1871,14 @@
             return filters;
         }
 
+        function getActiveRegionFilters() {
+            const filters = [];
+            if (document.getElementById('filter-region-emea').checked) filters.push('EMEA');
+            if (document.getElementById('filter-region-apj').checked) filters.push('APJ');
+            if (document.getElementById('filter-region-na').checked) filters.push('NA');
+            return filters;
+        }
+
         function selectAllFilters() {
             document.querySelectorAll('#filterGrid input[type="checkbox"]').forEach(cb => {
                 cb.checked = true;
@@ -1861,6 +1905,14 @@
 
         // Add promotion filter change listeners
         document.querySelectorAll('#promoFilterGrid input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                renderEmployees();
+                updateDistribution();
+            });
+        });
+
+        // Add region filter change listeners
+        document.querySelectorAll('#regionFilterGrid input[type="checkbox"]').forEach(cb => {
             cb.addEventListener('change', () => {
                 renderEmployees();
                 updateDistribution();
@@ -1944,11 +1996,11 @@
         }
 
         function populateColumnSelects() {
-            const selects = ['nameColumn', 'levelColumn', 'performanceColumn', 'potentialColumn', 'promotionColumn'];
+            const selects = ['nameColumn', 'levelColumn', 'performanceColumn', 'potentialColumn', 'promotionColumn', 'regionColumn'];
             
             selects.forEach(selectId => {
                 const select = document.getElementById(selectId);
-                select.innerHTML = selectId === 'promotionColumn' 
+                select.innerHTML = (selectId === 'promotionColumn' || selectId === 'regionColumn')
                     ? '<option value="">-- None --</option>'
                     : '<option value="">-- Select Column --</option>';
                 
@@ -1970,7 +2022,8 @@
                 levelColumn: ['level', 'job level', 'grade', 'job profile', 'profile'],
                 performanceColumn: ['performance', 'perf', 'rating', 'performance rating'],
                 potentialColumn: ['potential', 'pot', 'potential rating'],
-                promotionColumn: ['promotion', 'promo', 'promotion status', 'promotion tracking']
+                promotionColumn: ['promotion', 'promo', 'promotion status', 'promotion tracking'],
+                regionColumn: ['region', 'geography', 'geo', 'location', 'area']
             };
 
             const selectHints = hints[selectId] || [];
@@ -1990,6 +2043,7 @@
             const perfCol = document.getElementById('performanceColumn').value;
             const potCol = document.getElementById('potentialColumn').value;
             const promoCol = document.getElementById('promotionColumn').value;
+            const regionCol = document.getElementById('regionColumn').value;
 
             if (!nameCol) {
                 showToast('Please select a Name column', '⚠️');
@@ -2002,11 +2056,13 @@
                 const perfValue = row[perfCol] || '';
                 const potValue = row[potCol] || '';
                 const promoValue = promoCol ? (row[promoCol] || '') : '';
+                const regionValue = regionCol ? (row[regionCol] || '') : '';
 
                 // Parse performance and potential from values
                 const performance = parsePerformance(perfValue);
                 const potential = parsePotential(potValue);
                 const promotionStatus = parsePromotion(promoValue);
+                const region = parseRegion(regionValue);
                 const box = getBoxNumber(performance, potential);
 
                 return {
@@ -2016,6 +2072,7 @@
                     performance,
                     potential,
                     promotionStatus,
+                    region,
                     box
                 };
             });
@@ -2033,6 +2090,15 @@
             if (str.includes('preapproved') || str.includes('pre-approved')) return 'Preapproved';
             if (str.includes('ready')) return 'Ready';
             return 'None';
+        }
+
+        function parseRegion(value) {
+            if (!value) return 'NA';
+            const str = String(value).toUpperCase();
+            if (str.includes('EMEA') || str.includes('EUROPE') || str.includes('MIDDLE EAST') || str.includes('AFRICA')) return 'EMEA';
+            if (str.includes('APJ') || str.includes('APAC') || str.includes('ASIA') || str.includes('PACIFIC') || str.includes('JAPAN')) return 'APJ';
+            if (str.includes('NA') || str.includes('NORTH AMERICA') || str.includes('US') || str.includes('USA') || str.includes('CANADA') || str.includes('AMER')) return 'NA';
+            return 'NA';
         }
 
         function parsePerformance(value) {
@@ -2087,7 +2153,8 @@
                 'Performance': emp.performance || 'Unplotted',
                 'Potential': emp.potential || 'Unplotted',
                 'Box': emp.box || 'Unplotted',
-                'Promotion Status': emp.promotionStatus || 'None'
+                'Promotion Status': emp.promotionStatus || 'None',
+                'Region': emp.region || 'NA'
             }));
 
             const ws = XLSX.utils.json_to_sheet(exportData);
